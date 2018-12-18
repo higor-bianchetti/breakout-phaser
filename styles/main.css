@@ -13,13 +13,14 @@ body #game-title {
     width: 100%;
     background-color: blueviolet;
     margin-top: 0;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
     box-shadow: 0px 3px #222;
 }
 
 body #game-title h2 {
     color: #FAFAFA;
-    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 10px;
     text-align: center;
 }
 
