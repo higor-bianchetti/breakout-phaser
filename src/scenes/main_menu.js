@@ -1,28 +1,21 @@
-import {MenuButton} from '../objects/menu_button';
-
 export class MainMenu extends Phaser.Scene {
 
     preload() {
-        // TODO:
-        // Carregar uma imagem de fundo
+        this.load.image('title', 'assets/img/title.png');
+        this.load.spritesheet('btn_play', 'assets/img/btn_play.png', {
+            frameWidth: 150, frameHeight: 30
+        });
     }
 
     create() {
-        // Código temporário responsável por exibir um simples título na tela inicial
-        this.titleText = this.add.text(175, 125, 'Breakout Phaser', {
-            fontSize: '50px',
-            fill: '#00F'
-        });
+        // Exibe o título na tela inicial
+        this.add.image(400, 152, 'title');
 
-        // Botão de Iniciar Jogo
-        this.playBtn = new MenuButton(this, 375, 400, 'Jogar', {
-            fontSize: '25px',
-            fill: '#0F0'
-        }, () => this.teste());
-        this.add.existing(this.playBtn);
-    }
+        // Altera a imagem do botão com eventos do mouse
+        const btnPlay = this.add.image(400, 415, 'btn_play');
+        btnPlay.setInteractive();
 
-    teste() {
-        console.log("CLICK BTN");
+        btnPlay.on('pointerover', () => { btnPlay.setFrame(1); });
+        btnPlay.on('pointerout', () => { btnPlay.setFrame(0); });
     }
 }
