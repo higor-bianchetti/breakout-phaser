@@ -1,16 +1,15 @@
-var Breakout = new Phaser.Class({
-    Extends: Phaser.Scene,
-});
+import 'phaser';
+import {MainMenu} from './scenes/main_menu';
 
-var config = {
+const config = {
     type: Phaser.WEBGL,
     width: 800,
     height: 600,
     parent: 'game-content',
-    scene: [Breakout],
+    scene: MainMenu,
     physics: {
         default: 'arcade'
     }
 };
 
-var game = new Phaser.Game(config);
+new Phaser.Game(config);
