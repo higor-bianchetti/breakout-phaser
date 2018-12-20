@@ -6,6 +6,7 @@ export class Breakout extends Phaser.Scene {
         // ================================ Tela ===============================
         this.backgroundColor = '#8CFF98';   // Cor de fundo
         this.screenWidth = 800;             // Largura total do jogo
+        this.screenHeight = 600;            // Altura total do jogo
         this.gridInitX = 112;               // Posição inicial X do grid de tijolos
         this.gridInitY = 75;                // Posição inicial Y do grid de tijolos
         // =====================================================================
@@ -13,7 +14,7 @@ export class Breakout extends Phaser.Scene {
         this.bricks;
         this.bricksRow = 10;                // Quantidade de tijolos por linha
         this.brickWidth = 64;               // Largura
-        this.brickHeigth = 32;              // Altura
+        this.brickHeight = 32;              // Altura
         this.bricksKeys = [                 // Nome dos assets
             'gold_brick', 'bronze_brick', 'purple_brick',
             'red_brick', 'green_brick', 'blue_brick',
@@ -25,6 +26,7 @@ export class Breakout extends Phaser.Scene {
         this.ballInitY = 530;               // Posição Inicial Y
         this.ballVelocityX = -75;           // Velocidade em X
         this.ballVelocityY = -300;          // Velocidade em Y
+        this.velocityModX = 10;             // Modif. de velocidade ao acertar a barreira
         // =====================================================================
         // ============================== Barreira =============================
         this.paddle;
@@ -58,7 +60,7 @@ export class Breakout extends Phaser.Scene {
             for(let j = 0; j < this.bricksRow; j++) {
                 this.bricks.create(
                     this.gridInitX + (this.brickWidth + 1) * j,
-                    this.gridInitY + (this.brickHeigth + 1) * i,
+                    this.gridInitY + (this.brickHeight + 1) * i,
                     this.bricksKeys[i]
                 );
             }
@@ -75,8 +77,8 @@ export class Breakout extends Phaser.Scene {
         this.paddle.setImmovable();
 
         // Add os colisores da bola com os tijolos e da bola com a barreira
-        this.physics.add.collider(this.ball, this.bricks, null, null, this);
-        this.physics.add.collider(this.ball, this.paddle, null, null, this);
+        this.physics.add.collider(this.ball, this.bricks, this.hitBrick, null, this);
+        this.physics.add.collider(this.ball, this.paddle, this.hitPaddle, null, this);
 
         // Movimenta a barreira
         this.input.on('pointermove', (pointer) => {this.movePaddle(pointer)}, this);
@@ -104,6 +106,52 @@ export class Breakout extends Phaser.Scene {
         if(this.ball.getData('onPaddle')) {
             this.ball.setVelocity(this.ballVelocityX, this.ballVelocityY);
             this.ball.setData('onPaddle', false);
+        }
+    }
+
+    hitPaddle(ball, paddle) {
+        let aux = 0;
+
+        // Muda a direção da bola dependendo do lado da barreira que ela acertar
+        if(ball.x < paddle.x) {
+            aux = paddle.x - ball.x;
+            ball.setVelocityX(-1 * this.velocityModX * aux);
+        } else if(ball.x > paddle.x) {
+            aux = ball.x - paddle.x;
+            ball.setVelocityX(this.velocityModX * aux);
+        }
+    }
+
+    hitBrick(ball, brick) {
+        // Desabilita o tijolo atingido
+        brick.disableBody(true, true);
+
+        // Se todos os tijolos estiverm desabilitados, reinicia o jogo
+        if(this.bricks.countActive() === 0) {
+            this.resetLevel();
+        }
+    }
+
+    resetLevel() {
+        // Reposiciona a bola
+        this.resetBall();
+
+        // Habilita novamente todos os tijolos desabilitados
+        this.bricks.children.each(function(brick) {
+            brick.enableBody(false, 0, 0, true, true);
+        });
+    }
+
+    resetBall() {
+        // Reposiciona a bola com as características iniciais
+        this.ball.setVelocity(0);
+        this.ball.setPosition(this.paddle.x, this.ballInitY);
+        this.ball.setData('onPaddle', true);
+    }
+
+    update() {
+        if(this.ball.y > this.screenHeight) {
+            this.resetBall();
         }
     }
 }
