@@ -23,6 +23,8 @@ export class Breakout extends Phaser.Scene {
         this.ball;
         this.ballInitX = 400;               // Posição inicial X
         this.ballInitY = 530;               // Posição Inicial Y
+        this.ballVelocityX = -75;           // Velocidade em X
+        this.ballVelocityY = -300;          // Velocidade em Y
         // =====================================================================
         // ============================== Barreira =============================
         this.paddle;
@@ -72,8 +74,15 @@ export class Breakout extends Phaser.Scene {
         this.paddle = this.physics.add.image(this.paddleInitX, this.paddleInitY, 'paddle');
         this.paddle.setImmovable();
 
+        // Add os colisores da bola com os tijolos e da bola com a barreira
+        this.physics.add.collider(this.ball, this.bricks, null, null, this);
+        this.physics.add.collider(this.ball, this.paddle, null, null, this);
+
         // Movimenta a barreira
         this.input.on('pointermove', (pointer) => {this.movePaddle(pointer)}, this);
+
+        // Lança a bola
+        this.input.on('pointerup', () => {this.launchBall()}, this);
     }
 
     movePaddle(pointer) {
@@ -87,6 +96,14 @@ export class Breakout extends Phaser.Scene {
         // Faz com que a bola se movimente junto com a barreira
         if(this.ball.getData('onPaddle')) {
             this.ball.x = this.paddle.x;
+        }
+    }
+
+    launchBall() {
+        // Dispara a bola somente se ela estiver na barreira
+        if(this.ball.getData('onPaddle')) {
+            this.ball.setVelocity(this.ballVelocityX, this.ballVelocityY);
+            this.ball.setData('onPaddle', false);
         }
     }
 }
