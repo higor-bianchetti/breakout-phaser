@@ -18,6 +18,16 @@ export class Breakout extends Phaser.Scene {
             'red_brick', 'green_brick', 'blue_brick',
         ];
         // =====================================================================
+        // ================================ Bola ===============================
+        this.ball;
+        this.ballInitX = 400;               // Posição inicial X
+        this.ballInitY = 530;               // Posição Inicial Y
+        // =====================================================================
+        // ============================== Barreira =============================
+        this.paddle;
+        this.paddleInitX = 400;             // Posição inicial X
+        this.paddleInitY = 550;             // Posição inicial Y
+        // =====================================================================
     }
 
     preload() {
@@ -29,6 +39,9 @@ export class Breakout extends Phaser.Scene {
         this.load.image('blue_brick', 'assets/img/blue1.png');
         this.load.image('gold_brick', 'assets/img/gold1.png');
         this.load.image('red_brick', 'assets/img/red1.png');
+
+        this.load.image('ball', '../assets/img/ball.png');
+        this.load.image('paddle', '../assets/img/paddle.png');
     }
 
     create() {
@@ -46,5 +59,14 @@ export class Breakout extends Phaser.Scene {
                 );
             }
         }
+
+        // Criando e add propriedades à bola
+        this.ball = this.physics.add.image(this.ballInitX, this.ballInitY, 'ball');
+        this.ball.setCollideWorldBounds(true);
+        this.ball.setBounce(1);
+        this.ball.setData('onPaddle', true);
+
+        this.paddle = this.physics.add.image(this.paddleInitX, this.paddleInitY, 'paddle');
+        this.paddle.setImmovable();
     }
 }
