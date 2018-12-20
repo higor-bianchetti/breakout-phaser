@@ -5,6 +5,7 @@ export class Breakout extends Phaser.Scene {
 
         // ================================ Tela ===============================
         this.backgroundColor = '#8CFF98';   // Cor de fundo
+        this.screenWidth = 800;             // Largura total do jogo
         this.gridInitX = 112;               // Posição inicial X do grid de tijolos
         this.gridInitY = 75;                // Posição inicial Y do grid de tijolos
         // =====================================================================
@@ -27,6 +28,7 @@ export class Breakout extends Phaser.Scene {
         this.paddle;
         this.paddleInitX = 400;             // Posição inicial X
         this.paddleInitY = 550;             // Posição inicial Y
+        this.paddleWidth = 104;             // Largura
         // =====================================================================
     }
 
@@ -66,7 +68,25 @@ export class Breakout extends Phaser.Scene {
         this.ball.setBounce(1);
         this.ball.setData('onPaddle', true);
 
+        // Criando a barreira
         this.paddle = this.physics.add.image(this.paddleInitX, this.paddleInitY, 'paddle');
         this.paddle.setImmovable();
+
+        // Movimenta a barreira
+        this.input.on('pointermove', (pointer) => {this.movePaddle(pointer)}, this);
+    }
+
+    movePaddle(pointer) {
+        // Define os limites no qual a barreira pode se movimentar
+        this.paddle.x = Phaser.Math.Clamp(
+            pointer.x, 
+            this.paddleWidth / 2, 
+            this.screenWidth - this.paddleWidth / 2
+        );
+
+        // Faz com que a bola se movimente junto com a barreira
+        if(this.ball.getData('onPaddle')) {
+            this.ball.x = this.paddle.x;
+        }
     }
 }
