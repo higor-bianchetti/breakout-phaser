@@ -1,5 +1,50 @@
-/*
-var Breakout = new Phaser.Class({
-    Extends: Phaser.Scene,
-});
-*/
+export class Breakout extends Phaser.Scene {
+
+    constructor() {
+        super({ key: "Breakout" });
+
+        // ================================ Tela ===============================
+        this.backgroundColor = '#8CFF98';   // Cor de fundo
+        this.gridInitX = 112;               // Posição inicial X do grid de tijolos
+        this.gridInitY = 75;                // Posição inicial Y do grid de tijolos
+        // =====================================================================
+        // ============================== Tijolos ==============================
+        this.bricks;
+        this.bricksRow = 10;                // Quantidade de tijolos por linha
+        this.brickWidth = 64;               // Largura
+        this.brickHeigth = 32;              // Altura
+        this.bricksKeys = [                 // Nome dos assets
+            'gold_brick', 'bronze_brick', 'purple_brick',
+            'red_brick', 'green_brick', 'blue_brick',
+        ];
+        // =====================================================================
+    }
+
+    preload() {
+        this.cameras.main.setBackgroundColor(this.backgroundColor);
+
+        this.load.image('purple_brick', 'assets/img/purple1.png');
+        this.load.image('bronze_brick', 'assets/img/bronze1.png');
+        this.load.image('green_brick', 'assets/img/green1.png');
+        this.load.image('blue_brick', 'assets/img/blue1.png');
+        this.load.image('gold_brick', 'assets/img/gold1.png');
+        this.load.image('red_brick', 'assets/img/red1.png');
+    }
+
+    create() {
+        // Definindo os limites do jogo
+        this.physics.world.setBoundsCollision(true, true, true, false);
+
+        // Posicionando os tijolos
+        this.bricks = this.physics.add.staticGroup();
+        for(let i = 0; i < this.bricksKeys.length; i++) {
+            for(let j = 0; j < this.bricksRow; j++) {
+                this.bricks.create(
+                    this.gridInitX + (this.brickWidth + 1) * j,
+                    this.gridInitY + (this.brickHeigth + 1) * i,
+                    this.bricksKeys[i]
+                );
+            }
+        }
+    }
+}
