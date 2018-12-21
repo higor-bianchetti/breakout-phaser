@@ -46,8 +46,9 @@ export class Breakout extends Phaser.Scene {
         this.load.image('gold_brick', 'assets/img/gold1.png');
         this.load.image('red_brick', 'assets/img/red1.png');
 
-        this.load.image('ball', '../assets/img/ball.png');
-        this.load.image('paddle', '../assets/img/paddle.png');
+        this.load.image('ball', 'assets/img/ball.png');
+        this.load.image('paddle', 'assets/img/paddle.png');
+        this.load.image('heart', 'assets/img/heart1.png');
     }
 
     create() {
